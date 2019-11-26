@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>骑行记录修改</title>
+</head>
+<body>
+    <form action="/CyclingR_update/" method="post">
+        {% if message %}
+            <div class="alert alert-warning">{{ message }}</div>
+        {% endif %}
+           {% csrf_token %}
+            <p>
+                <label for="id">共享单车编号：</label>
+                <input type="text" id="id" name="id" placeholder="ID" autofocus required />
+            </p>
+            <p>
+                <label for="bike_id">共享单车编号：</label>
+                <input type="text" id="bike_id" name="bike_id" placeholder="共享单车编号" autofocus required />
+            </p>
+            <p>
+                <label for="user_id">用户编号：</label>
+                <input type="text" id="user_id" placeholder="用户编号" name="user_id" required >
+            </p>
+            <p>
+                <label for="location_x">经度：</label>
+                <input type="text" id="location_x" placeholder="经度" name="location_x" required >
+            </p>
+            <p>
+                <label for="location_y">纬度：</label>
+                <input type="text" id="location_y" placeholder="纬度" name="location_y" required >
+            </p>
+            <p>
+                <label for="start_time">开始时间：</label>
+                <input type="text" id="start_time" placeholder="开始时间" name="start_time">
+            </p>
+            <p>
+                <label for="end_time">结束时间：</label>
+                <input type="text" id="end_time" placeholder="结束时间" name="end_time">
+            </p>
+            <input type="submit" value="确定" name="query">
+    </form>
+</body>
+</html>

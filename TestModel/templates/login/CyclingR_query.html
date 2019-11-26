@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>骑行记录查询</title>
+</head>
+<body>
+    <form action="/CyclingR_query/" method="post">
+            {% if queryset %}
+                <div class="alert alert-warning">{{ queryset }}</div>
+            {% elif message %}
+                <div class="alert alert-warning">{{ message }}</div>
+            {% endif %}
+       {% csrf_token %}
+        <p>
+            <label for="bike_id">共享单车编号：</label>
+            <input type="text" id="bike_id" name="bike_id" placeholder="共享单车编号" autofocus required />
+        </p>
+        <input type="submit" value="确定">
+    </form>
+    <form action="/CyclingR_del/" method="post">
+       {% csrf_token %}
+        <p>
+            <label for="bike_id2">共享单车编号：</label>
+            <input type="text" id="bike_id2" name="bike_id" placeholder="共享单车编号" autofocus required />
+        </p>
+        <input type="submit" value="删除">
+    </form>
+
+</body>
+</html>

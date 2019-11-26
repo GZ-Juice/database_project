@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>共享单车信息</title>
+</head>
+<body>
+    <div style="margin: 15% 40%;">
+        <h1>共享单车查询</h1>
+       <form action="/Bike_query/" method="post">
+           {% if message %}
+                <div class="alert alert-warning">{{ message }}</div>
+           {% else %}
+                {% for bike in bikes %}
+                    <li>{{ bike.Battery }}</li>
+                {% endfor %}
+           {% endif %}
+           {% csrf_token %}
+            <p>
+                <label for="id_username">自行车编号：</label>
+                <input type="text" id="id_username" name="BikeId" placeholder="用户名" autofocus required />
+            </p>
+            <p>
+                <label for="id_password">所属公司</label>
+                <input type="password" id="id_password" placeholder="密码" name="CompanyName" required >
+            </p>
+            <input type="submit" value="确定">
+        </form>
+    </div>
+</body>
+</html>
