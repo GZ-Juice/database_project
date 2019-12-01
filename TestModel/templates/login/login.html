@@ -1,32 +1,93 @@
+{% load staticfiles %}
+{% block css %}
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+{% endblock %}
+
+{#<!DOCTYPE html>#}
+{#<html lang="en">#}
+{#<head>#}
+{#    <meta charset="UTF-8">#}
+{#    <title>登录</title>#}
+{#</head>#}
+{#<body>#}
+{##}
+{#    <div style="margin: 15% 40%;">#}
+{#        <h1>欢迎登录！</h1>#}
+{#       <form action="/login/" method="post">#}
+{#           {% csrf_token %}#}
+{#            <p>#}
+{#                <label for="id_username">用户名：</label>#}
+{#                <input type="text" id="id_username" name="username" placeholder="用户名" autofocus required />#}
+{#            </p>#}
+{#            <p>#}
+{#                <label for="id_password">密码：</label>#}
+{#                <input type="password" id="id_password" placeholder="密码" name="password" required >#}
+{#            </p>#}
+{#           <p>#}
+{#               <label>爱好：</label>#}
+{#               <input type="checkbox" name="uhobbies" value="篮球">篮球#}
+{#               <input type="checkbox" name="uhobbies" value="足球">足球#}
+{#               <input type="checkbox" name="uhobbies" value="乒乓球">乒乓球#}
+{#           </p>#}
+{#            <input type="submit" value="确定">#}
+{#        </form>#}
+{#    </div>#}
+{##}
+{#</body>#}
+{#</html>#}
+
+
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <title>登录</title>
+	<title>登录</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<script type="application/x-javascript">
+		addEventListener("load", function() { setTimeout(hideURLbar, 0); }, false);
+		function hideURLbar(){ window.scrollTo(0,1); }
+	</script>
+	<meta name="keywords" content="Flat Dark Web Login Form Responsive Templates, Iphone Widget Template, Smartphone login forms,Login form, Widget Template, Responsive Templates, a Ipad 404 Templates, Flat Responsive Templates" />
+	<link href="../../static/css/style.css" rel='stylesheet' type='text/css' />
+	<!--webfonts-->
+	<link href='http://fonts.useso.com/css?family=PT+Sans:400,700,400italic,700italic|Oswald:400,300,700' rel='stylesheet' type='text/css'>
+	<link href='http://fonts.useso.com/css?family=Exo+2' rel='stylesheet' type='text/css'>
+	<!--//webfonts-->
+	<script src="http://ajax.useso.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
 </head>
 <body>
-
-    <div style="margin: 15% 40%;">
-        <h1>欢迎登录！</h1>
-       <form action="/login/" method="post">
-           {% csrf_token %}
-            <p>
-                <label for="id_username">用户名：</label>
-                <input type="text" id="id_username" name="username" placeholder="用户名" autofocus required />
-            </p>
-            <p>
-                <label for="id_password">密码：</label>
-                <input type="password" id="id_password" placeholder="密码" name="password" required >
-            </p>
-           <p>
-               <label>爱好：</label>
-               <input type="checkbox" name="uhobbies" value="篮球">篮球
-               <input type="checkbox" name="uhobbies" value="足球">足球
-               <input type="checkbox" name="uhobbies" value="乒乓球">乒乓球
-           </p>
-            <input type="submit" value="确定">
-        </form>
-    </div>
-
+	<script>$(document).ready(function(c) {
+		$('.close').on('click', function(c){
+			$('.login-form').fadeOut('slow', function(c){
+				$('.login-form').remove();
+			});
+		});
+	});
+	</script>
+	<!--SIGN UP-->
+	<h1>共享单车管理系统</h1>
+	<div class="login-form">
+		<div class="close"> </div>
+		<div class="head-info">
+			<label class="lbl-1"> </label>
+			<label class="lbl-2"> </label>
+			<label class="lbl-3"> </label>
+		</div>
+		<div class="clear"> </div>
+		<div class="avtar">
+			<img src="../../static/images/head.png" height="150" width="150" />
+		</div>
+		<form>
+			<input type="text" class="text" value="用户名" onfocus="this.value = '';" onblur="if (this.value == '') {this.value = 'Username';}" >
+			<div class="key">
+				<input type="password" value="Password" onfocus="this.value = '';" onblur="if (this.value == '') {this.value = 'Password';}">
+			</div>
+		</form>
+		<div class="signin">
+			<input type="submit" value="登录" >
+		</div>
+	</div>
+	<div class="copy-rights">
+		<p>制作人：郭智伦、周长隆、周始昊、晏易茂</p>
+	</div>
 </body>
 </html>
