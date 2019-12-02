@@ -3,11 +3,35 @@ from django.core.exceptions import ValidationError
 from django.core.validators import MaxValueValidator, MinValueValidator
 import django.utils.timezone as timezone
 
+
 # Create your models here.
 
 
+# 用户
+class User(models.Model):
+    user_type = {
+        ('company', '公司'),
+        ('government', '政府'),
+        ('center', '维修中心')
+    }
+
+    name = models.CharField(max_length=128, unique=True)
+    password = models.CharField(max_length=256)
+    usertype = models.CharField(max_length=32, choices=user_type, default='公司')
+    c_time = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        ordering = ['c_time']
+        verbose_name = '用户'
+        verbose_name_plural = '用户'
+
+
+# 自行车
 class Bike(models.Model):
-    BikeId = models.CharField(primary_key=True, max_length=6, verbose_name='平台统一编号')      # 主键
+    BikeId = models.CharField(primary_key=True, max_length=6, verbose_name='平台统一编号')  # 主键
     CompanyName = models.CharField(max_length=10, verbose_name='所属企业')
     BikeState = models.BooleanField(default=True, verbose_name='可用')
     LocationX = models.DecimalField(max_digits=6, decimal_places=3, verbose_name='经度')
@@ -23,7 +47,7 @@ class Bike(models.Model):
 
 # 骑行记录
 class CyclingRecords(models.Model):
-    BikeId = models.ForeignKey(Bike, on_delete=models.CASCADE)          # 外键
+    BikeId = models.ForeignKey(Bike, on_delete=models.CASCADE)  # 外键
     UserId = models.CharField(max_length=11, verbose_name='骑行用户id')
     StartTime = models.DateTimeField(default=timezone.now, verbose_name='开始时间')
     EndTime = models.DateTimeField(default=timezone.now, verbose_name='结束时间')
@@ -55,12 +79,12 @@ class Center(models.Model):
 
 # 维修记录
 class RepairRecords(models.Model):
-    BikeId = models.ForeignKey(Bike, on_delete=models.CASCADE)       # 外键
+    BikeId = models.ForeignKey(Bike, on_delete=models.CASCADE)  # 外键
     CenterId = models.ForeignKey(Center, on_delete=models.CASCADE, verbose_name='维修中心编号')
     BreakDownTime = models.DateField(default=timezone.now, verbose_name='损坏发生时间')
     RepairTime = models.DateField(default=timezone.now, verbose_name='维修完成时间')
     RepairParts = models.CharField(max_length=7, verbose_name='维修部位')
-    Brake = models.BooleanField(default=True, verbose_name='刹车')        # True代表完好，False代表损坏
+    Brake = models.BooleanField(default=True, verbose_name='刹车')  # True代表完好，False代表损坏
     Wheel = models.BooleanField(default=True, verbose_name='车轮')
     Pedal = models.BooleanField(default=True, verbose_name='脚踏')
     Saddle = models.BooleanField(default=True, verbose_name='车座')

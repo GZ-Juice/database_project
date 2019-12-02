@@ -1,9 +1,11 @@
-from django.shortcuts import render
-from django.shortcuts import redirect
 from django.http import HttpResponse
 from dateutil import parser
+from django.shortcuts import render, redirect
 from . import models
+from .forms import UserForm
 import re
+
+
 # Create your views here.
 def is_number(num):
     pattern = re.compile(r'^[-+]?[-0-9]\d*\.\d*|[-+]?\.?[0-9]\d*$')
@@ -13,36 +15,50 @@ def is_number(num):
     else:
         return False
 
+
 def index(request):
     pass
-    return  HttpResponse("Hello, world. Fuck this database!")
+    return render(request, 'login/index.html')
 
 def login(request):
     if request.session.get('is_login',None):
-        message = "不允许重复登陆！"
-        return HttpResponse({'message':message})
+        return redirect('/index')
+
     if request.method == "POST":
-        username = request.POST.get('username')
-        password = request.POST.get('password')
-        hobbies = request.POST.getlist('uhobbies')
-        #return render(request, 'login/index.html', {'hobbies': hobbies})
+        login_form = UserForm(request.POST)
+        message = "请检查填写的内容！"
+        if login_form.is_valid():
+            username = login_form.cleaned_data['username']
+            password = login_form.cleaned_data['password']
+            try:
+                user = models.User.objects.get(name=username)
+                if user.password == password:
+                    request.session['is_login'] = True
+                    request.session['user_id'] = user.id
+                    request.session['user_name'] = user.name
+                    return redirect('/index/')
+                else:
+                    message = "密码不正确！"
+            except:
+                message = "用户不存在！"
+        return render(request, 'login/login.html', locals())
 
-        try:
-            user = models.User.objects.get(username = username)
-        except:
-            message = "用户不存在"
-            return HttpResponse({'message':message})
+    login_form = UserForm()
+    return render(request, 'login/login.html', locals())
 
-        if user.password == password:
-            request.session['is_login'] = True
-            request.session['user_id'] = user.id
-            request.session['user_name'] = user.username
-            request.session['permisson'] = user.permission
-            return redirect('/index/')
-        else:
-            message = "密码错误"
-            return HttpResponse({'message':message})
-    return render(request,'login/login.html')
+
+def register(request):
+    pass
+    return render(request, 'login/register.html')
+
+
+def logout(request):
+    if not request.session.get('is_login', None):
+        # 如果本来就未登录，也就没有登出一说
+        return redirect("/index/")
+    request.session.flush()
+    return redirect("/index/")
+
 
 # def Bike_query(request):
 #     if request.method == "POST":
@@ -59,18 +75,6 @@ def login(request):
 #         data['num'] = num
 #         return render(request, 'login/Bike_query.html', data)
 #     return render(request,'login/Bike_query.html')
-
-def register(request):
-    pass
-    return render(request, 'login/register.html')
-
-
-def logout(request):
-    if not request.session.get('is_login',None):
-        return redirect("/login/")
-    request.session.flush()
-    return redirect("/login/")
-
 
 def Bike_query(request):
     if request.method == "POST":
@@ -109,12 +113,12 @@ def Center_query(request):
 
 
 def Center_alter(request):
-    if request.session.get('is_login',None):
+    if request.session.get('is_login', None):
         return redirect('/login/')
     else:
         if request.session.get('permisson') != 3:
             message = "无权限执行此操作！"
-            return render(request,'',{'message':message})
+            return render(request, '', {'message': message})
     if request.method == "POST":
         center_id = request.POST.get('CenterId')
         location = request.POST.get('Location')
@@ -124,16 +128,18 @@ def Center_alter(request):
         saddle_num = request.POST.get('SaddleNum')
         qrcode_num = request.POST.get('QRcodeNum')
         lock_num = request.POST.get('LockNum')
-        models.Center.objects.filter(CenterId = center_id).update(BrakeNum=brake_num,WheelNum=wheel_num,PedalNum=pedal_num,SaddleNum=saddle_num,QRcodeNum=qrcode_num,LockNum=lock_num)
+        models.Center.objects.filter(CenterId=center_id).update(BrakeNum=brake_num, WheelNum=wheel_num,
+                                                                PedalNum=pedal_num, SaddleNum=saddle_num,
+                                                                QRcodeNum=qrcode_num, LockNum=lock_num)
         data = {}
         data['Center'] = models.Center.objects.all()
-        return render(request,'',data)
+        return render(request, '', data)
 
 
-#------------------------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------------------------
 
 
-#增加骑行记录
+# 增加骑行记录
 def CyclingRecords_add(request):
     if request.method == "POST":
         data = {}
@@ -148,15 +154,18 @@ def CyclingRecords_add(request):
             data['EndTime'] = parser.parse(data['EndTime'])
         except:
             message = "时间格式错误！"
-            return render(request, 'login/CyclingR_add.html',{'message':message})
-        if data['BikeId'].isdigit() and data['UserId'].isdigit() and is_number(data['LocationX']) and is_number(data['LocationY']):
+            return render(request, 'login/CyclingR_add.html', {'message': message})
+        if data['BikeId'].isdigit() and data['UserId'].isdigit() and is_number(data['LocationX']) and is_number(
+                data['LocationY']):
             try:
                 bike = models.Bike.objects.get(BikeId=data['BikeId'])
-                models.CyclingRecords.objects.create(BikeId=bike,UserId=data['UserId'],LocationX=data['LocationX'],LocationY=data['LocationY'],StartTime=data['StartTime'],EndTime=data['EndTime'])
-                return render(request, 'login/CyclingR_add.html',{'data':data})
+                models.CyclingRecords.objects.create(BikeId=bike, UserId=data['UserId'], LocationX=data['LocationX'],
+                                                     LocationY=data['LocationY'], StartTime=data['StartTime'],
+                                                     EndTime=data['EndTime'])
+                return render(request, 'login/CyclingR_add.html', {'data': data})
             except:
                 message = "不存在该编号的共享单车！"
-                return HttpResponse({'message':message})
+                return HttpResponse({'message': message})
         else:
             message = "填写的数据格式有误！"
             return render(request, 'login/CyclingR_add.html', {'message': message})
@@ -173,7 +182,7 @@ def CyclingRecords_query(request):
         EndTime = request.POST.get('end_time')
         LocationX = (request.POST.get('location_x'))
         LocationY = (request.POST.get('location_y'))
-        if StartTime or EndTime != None :
+        if StartTime or EndTime != None:
             try:
                 StartTime = parser.parse(StartTime)
                 EndTime = parser.parse(EndTime)
@@ -181,7 +190,7 @@ def CyclingRecords_query(request):
                 query_dict['EndTime'] = EndTime
             except:
                 message = "时间格式错误！"
-                return render(request, 'login/CyclingR_query.html',{'message':message})
+                return render(request, 'login/CyclingR_query.html', {'message': message})
         if BikeId != None:
             query_dict['BikeId'] = BikeId
             if not BikeId.isdigit():
@@ -206,7 +215,7 @@ def CyclingRecords_query(request):
         print(queryset)
         if len(queryset) == 0:
             message = "没有符合条件的数据！"
-            return render(request,'login/CyclingR_query.html',{'message':message})
+            return render(request, 'login/CyclingR_query.html', {'message': message})
         else:
             data = {}
             data['queryset'] = queryset
@@ -221,7 +230,8 @@ def CyclingRecords_query(request):
         message = "无维修中心记录！"
         return render(request, 'login/CyclingR_query.html', {'message': message})
 
-#删除骑行记录
+
+# 删除骑行记录
 def CyclingRecords_del(request):
     if request.method == "POST":
         BikeId = request.POST.get('bike_id')
@@ -230,14 +240,16 @@ def CyclingRecords_del(request):
         EndTime = request.POST.get('end_time')
         LocationX = (request.POST.get('location_x'))
         LocationY = (request.POST.get('location_y'))
-        result = models.CyclingRecords.objects.filter(BikeId =BikeId,UserId =UserId,StartTime =StartTime,EndTime =EndTime,LocationX =LocationX, LocationY =LocationY)
+        result = models.CyclingRecords.objects.filter(BikeId=BikeId, UserId=UserId, StartTime=StartTime,
+                                                      EndTime=EndTime, LocationX=LocationX, LocationY=LocationY)
         length = len(result)
         result.delete()
         message = "共删除数据：" + str(length)
-        return render(request,'login/CyclingR_query.html',{'message':message})
-    return render(request,'login/CyclingR_query.html')
+        return render(request, 'login/CyclingR_query.html', {'message': message})
+    return render(request, 'login/CyclingR_query.html')
 
-#修改骑行记录
+
+# 修改骑行记录
 def CyclingRecords_update(request):
     if request.method == "POST":
         id = request.POST.get('id')
@@ -253,13 +265,14 @@ def CyclingRecords_update(request):
             bike = models.Bike.objects.get(BikeId=BikeId)
         except:
             message = "无对应共享单车编号!"
-            return render(request,'login/CyclingR_update.html',{'message':message})
+            return render(request, 'login/CyclingR_update.html', {'message': message})
         try:
-            models.CyclingRecords.objects.filter(id=id).update(BikeId =bike,UserId =UserId,StartTime =StartTime,EndTime =EndTime,LocationX =LocationX, LocationY =LocationY)
+            models.CyclingRecords.objects.filter(id=id).update(BikeId=bike, UserId=UserId, StartTime=StartTime,
+                                                               EndTime=EndTime, LocationX=LocationX,
+                                                               LocationY=LocationY)
             message = "修改已完成!"
             return render(request, 'login/CyclingR_update.html', {'message': message})
         except:
             message = "修改失败！"
             return render(request, 'login/CyclingR_update.html', {'message': message})
-    return render(request,'login/CyclingR_update.html')
-
+    return render(request, 'login/CyclingR_update.html')
