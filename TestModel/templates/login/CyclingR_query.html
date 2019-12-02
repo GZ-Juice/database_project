@@ -1,17 +1,216 @@
 <!DOCTYPE html>
 <html lang="en">
+{% load staticfiles %}
 <head>
-    <meta charset="UTF-8">
+	<meta charset="UTF-8">
     <title>骑行记录查询</title>
+	<link href="../static/css/style.css" rel="stylesheet" type="text/css" />
+	<link href="../static/css/style2.css" rel="stylesheet" type="text/css" />
+	<link href="../static/css/style3.css" rel="stylesheet" type="text/css" />
+    <link rel="stylesheet" href="../static/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../static/css/padding.margin.css">
+    <link rel="stylesheet" type="text/css" href="../static/css/button.css">
 </head>
+
+<body>
+	<nav class="flick navbar navbar4 dark navbar-default">
+		<div class="container pos_relative">
+			<div class="navbar-header">
+				<button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
+				data-target="#collaps10" aria-expanded="false">
+				<span class="sr-only">Toggle navigation</span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+			  	</button>
+				<a class="navbar-brand set_position" href="#"><img src="../static/img/bike_logo.png" alt="logo" height="90"></a>
+			</div>
+
+			<div class="collapse navbar-collapse" id="collaps10">
+				<ul class="nav navbar-nav">
+					<li><a href="#">共享单车</a></li>
+					<li><a href="#">零件库存 & 维修记录</a></li>
+					<li><a href="#">违停信息 & 骑行记录</a></li>
+					<li><a href="#">共享单车企业</a></li>
+				</ul>
+				<ul class="nav navbar-nav navbar-right">
+					<li><a href="#">退出登录</a></li>
+				</ul>
+			</div>
+		</div>
+	</nav>
+	<div class="set_position2"></div>
+	<div class="card table_position1">
+		<div class="card-header">
+			<h4>行车记录</h4>
+		</div>
+		<div class="card-body">
+            <form action="/CyclingR_query/" method="post">
+                <p>
+                    <label for="bike_id">共享单车编号：</label>
+                    <input type="text" id="bike_id" name="bike_id" placeholder="共享单车编号" autofocus required />
+                	<input type="submit" value="查询">
+				</p>
+                <table class="table table-striped card-text">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Bike_ID</th>
+                            <th>User_ID</th>
+                            <th>Start_Time</th>
+                            <th>End_Time</th>
+                            <th>Location_X</th>
+                            <th>Location_Y</th>
+							<th>#</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            {% if message %}
+                                <div class="alert alert-warning">{{ message }}</div>
+                            {% else %}
+                                {% for qs in queryset %}
+                                    <tr>
+                                        <th scope="row">{{ qs.id }}</th>
+                                        <td>{{ qs.BikeId_id }}</td>
+                                        <td>{{ qs.UserId }}</td>
+                                        <td>{{ qs.StartTime }}</td>
+                                        <td>{{ qs.EndTime }}</td>
+                                        <td>{{ qs.LocationX }}</td>
+                                        <td>{{ qs.LocationY }}</td>
+										<td><a href="CyclingRecords_del">Delete</a></td>
+                                    </tr>
+                                {% endfor %}
+                            {% endif %}
+                            {% csrf_token %}
+                        </tr>
+                    </tbody>
+                </table>
+            </form>
+		</div>
+	</div>
+	<div class="set_position1"></div>
+	<div class="set_position2"></div>
+	<div class="card table_position2">
+		<div class="card-header">
+			<h4>零件库存001</h4>
+		</div>
+		<div class="card-body">
+			<table class="table table-striped card-text">
+				<thead>
+					<tr>
+						<th>#</th>
+						<th>零件名</th>
+						<th>剩余数量</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<th scope="row">1</th>
+						<td>刹车</td>
+						<td>。</td>
+					</tr>
+					<tr>
+						<th scope="row">2</th>
+						<td>车轮</td>
+						<td>。</td>
+					</tr>
+					<tr>
+						<th scope="row">3</th>
+						<td>脚踏</td>
+						<td>。</td>
+					</tr>
+					<tr>
+						<th scope="row">4</th>
+						<td>车座</td>
+						<td>。</td>
+					</tr>
+					<tr>
+						<th scope="row">5</th>
+						<td>二维码</td>
+						<td>。</td>
+					</tr>
+					<tr>
+						<th scope="row">6</th>
+						<td>车锁</td>
+						<td>。</td>
+					</tr>
+					<tr>
+						<th scope="row">7</th>
+						<td>链条</td>
+						<td>。</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+	</div>
+	<div class="set_position2"></div>
+	<div class="card table_position2">
+		<div class="card-header">
+			<h4>零件库存002</h4>
+		</div>
+		<div class="card-body">
+			<table class="table table-striped card-text">
+				<thead>
+					<tr>
+						<th>#</th>
+						<th>零件名</th>
+						<th>剩余数量</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<th scope="row">1</th>
+						<td>刹车</td>
+						<td>。</td>
+					</tr>
+					<tr>
+						<th scope="row">2</th>
+						<td>车轮</td>
+						<td>。</td>
+					</tr>
+					<tr>
+						<th scope="row">3</th>
+						<td>脚踏</td>
+						<td>。</td>
+					</tr>
+					<tr>
+						<th scope="row">4</th>
+						<td>车座</td>
+						<td>。</td>
+					</tr>
+					<tr>
+						<th scope="row">5</th>
+						<td>二维码</td>
+						<td>。</td>
+					</tr>
+					<tr>
+						<th scope="row">6</th>
+						<td>车锁</td>
+						<td>。</td>
+					</tr>
+					<tr>
+						<th scope="row">7</th>
+						<td>链条</td>
+						<td>。</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+	</div>
+</body>
+</html>
+<!--
 <body>
     <form action="/CyclingR_query/" method="post">
-            {% if queryset %}
-                <div class="alert alert-warning">{{ queryset }}</div>
-            {% elif message %}
-                <div class="alert alert-warning">{{ message }}</div>
-            {% endif %}
-       {% csrf_token %}
+        {% if message %}
+            <div class="alert alert-warning">{{ message }}</div>
+        {% else %}
+            {% for qs in queryset %}
+                <li>{{ qs.EndTime }}</li>
+            {% endfor %}
+        {% endif %}
+        {% csrf_token %}
         <p>
             <label for="bike_id">共享单车编号：</label>
             <input type="text" id="bike_id" name="bike_id" placeholder="共享单车编号" autofocus required />
@@ -29,3 +228,4 @@
 
 </body>
 </html>
+-->

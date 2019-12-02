@@ -71,11 +71,13 @@ def logout(request):
     request.session.flush()
     return redirect("/login/")
 
+
 def Bike_query(request):
     if request.method == "POST":
         bike_id = request.POST.get('BikeId')
         company_name = request.POST.get('CompanyName')
         bikes = models.Bike.objects.filter(CompanyName=company_name)
+        print(bikes)
         if bikes.exists():
             num = len(bikes)
             data = {}
@@ -85,14 +87,15 @@ def Bike_query(request):
         else:
             message = "数据不存在"
             return render(request, 'login/Bike_query.html', {'message': message})
-    bikes = models.Bike.objects.all()[:50]
-    if bikes.exists():
+    bikes1 = models.Bike.objects.all()[:50]
+    if bikes1.exists():
         data = {}
-        data['bikes'] = bikes
+        data['bikes'] = bikes1
         return render(request, 'login/Bike_query.html', data)
     else:
         message = "无维修中心记录！"
         return render(request, 'login/Bike_query.html', {'message': message})
+
 
 def Center_query(request):
     center = models.Center.objects.all()
@@ -159,7 +162,8 @@ def CyclingRecords_add(request):
             return render(request, 'login/CyclingR_add.html', {'message': message})
     return render(request, 'login/CyclingR_add.html')
 
-#查询骑行记录
+
+# 查询骑行记录
 def CyclingRecords_query(request):
     if request.method == "POST":
         query_dict = {}
@@ -204,8 +208,18 @@ def CyclingRecords_query(request):
             message = "没有符合条件的数据！"
             return render(request,'login/CyclingR_query.html',{'message':message})
         else:
-            return render(request,'login/CyclingR_query.html',{'queryset':queryset})
-    return render(request,'login/CyclingR_query.html')
+            data = {}
+            data['queryset'] = queryset
+            return render(request, 'login/CyclingR_query.html', data)
+            # return render(request,'login/CyclingR_query.html',{'queryset':queryset})
+    queryset = models.CyclingRecords.objects.all()
+    if queryset.exists():
+        data = {}
+        data['queryset'] = queryset
+        return render(request, 'login/CyclingR_query.html', data)
+    else:
+        message = "无维修中心记录！"
+        return render(request, 'login/CyclingR_query.html', {'message': message})
 
 #删除骑行记录
 def CyclingRecords_del(request):
